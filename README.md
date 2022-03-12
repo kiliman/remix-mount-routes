@@ -33,8 +33,8 @@ You can either hard-code the basePath in your config file, or use an environment
 variable like:
 
 ```json
+"build": "cross-env NODE_ENV=production REMIX_BASEPATH=/myapp remix build",
 "dev": "cross-env NODE_ENV=development REMIX_BASEPATH=/myapp remix dev",
-"start": "cross-env NODE_ENV=production REMIX_BASEPATH=/myapp remix-serve build"
 ```
 
 ```js
