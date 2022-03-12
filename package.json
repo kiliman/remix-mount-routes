@@ -1,0 +1,43 @@
+{
+  "name": "remix-mount-routes",
+  "version": "0.1.0",
+  "description": "Package for mounting Remix app to non-root routes",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc --project tsconfig.json --module CommonJS --outDir ./dist",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "remix"
+  ],
+  "author": {
+    "name": "Kiliman",
+    "email": "kiliman@gmail.com",
+    "url": "https://kiliman.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiliman/remix-mount-routes.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "minimatch": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^3.0.5",
+    "@types/node": "^17.0.21",
+    "all-contributors-cli": "^6.20.0",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.2"
+  }
+}
