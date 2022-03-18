@@ -1,7 +1,7 @@
 {
   "name": "remix-mount-routes",
-  "version": "0.1.0",
-  "description": "Package for mounting Remix app to non-root routes",
+  "version": "0.1.1",
+  "description": "Package for mounting Remix routes to any path",
   "main": "dist/index.js",
   "files": [
     "dist",

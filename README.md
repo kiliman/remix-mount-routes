@@ -18,7 +18,7 @@ This package enables you to mount your Remix app at a different path than root.
 
 Update your _remix.config.js_ file and use the custom routes config option.
 
-Call `mountRoutes(appDir, basePath, defineRoutes, ignoredRouteFiles?)` and return
+Call `mountRoutes(basePath, routesDir, ignoredRouteFiles?)` and return
 the route manifest.
 
 NOTE: `basePath` should be an absolute path (e.g., `/myapp`)
@@ -26,15 +26,16 @@ NOTE: `basePath` should be an absolute path (e.g., `/myapp`)
 Your route files are still relative to `app/routes` folder. That is
 `app/routes/posts/$slug.tsx` will map to the URL `/myapp/posts/:slug`
 
-You also need to update `publicPath` and `assetsBuildDirectory` to include your
-`basePath`. This will ensure that your assets will be served properly.
+Depending on your setup, you may also need to update `publicPath` and
+`assetsBuildDirectory` to include your `basePath`. This will ensure that your
+assets will be served properly.
 
 You can either hard-code the basePath in your config file, or use an environment
 variable like:
 
 ```json
-"build": "cross-env NODE_ENV=production REMIX_BASEPATH=/myapp remix build",
-"dev": "cross-env NODE_ENV=development REMIX_BASEPATH=/myapp remix dev",
+"build": "cross-env REMIX_BASEPATH=/myapp remix build",
+"dev": "cross-env REMIX_BASEPATH=/myapp remix dev",
 ```
 
 ```js
