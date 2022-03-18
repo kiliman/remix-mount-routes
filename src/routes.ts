@@ -116,9 +116,63 @@ function stripFileExtension(file: string) {
 
 export type DefineRoutesFunction = typeof defineRoutes
 
-function defineRoutes(
+export function defineRoutes(
+  basePath: string,
   callback: (defineRoute: DefineRouteFunction) => void,
 ): RouteManifest {
-  let manifest: RouteManifest = {}
-  return manifest
+  let routes: RouteManifest = Object.create(null)
+  let parentRoutes: ConfigRoute[] = []
+  let alreadyReturned = false
+
+  let defineRoute: DefineRouteFunction = (
+    path,
+    file,
+    optionsOrChildren,
+    children,
+  ) => {
+    if (alreadyReturned) {
+      throw new Error(
+        'You tried to define routes asynchronously but started defining ' +
+          'routes before the async work was done. Please await all async ' +
+          'data before calling `defineRoutes()`',
+      )
+    }
+
+    let options: DefineRouteOptions
+    if (typeof optionsOrChildren === 'function') {
+      // route(path, file, children)
+      options = {}
+      children = optionsOrChildren
+    } else {
+      // route(path, file, options, children)
+      // route(path, file, options)
+      options = optionsOrChildren || {}
+    }
+
+    let route: ConfigRoute = {
+      path: path ? path : undefined,
+      index: options.index ? true : undefined,
+      caseSensitive: options.caseSensitive ? true : undefined,
+      id: createRouteId(basePath, file),
+      parentId:
+        parentRoutes.length > 0
+          ? parentRoutes[parentRoutes.length - 1].id
+          : undefined,
+      file,
+    }
+
+    routes[route.id] = route
+
+    if (children) {
+      parentRoutes.push(route)
+      children()
+      parentRoutes.pop()
+    }
+  }
+
+  callback(defineRoute)
+
+  alreadyReturned = true
+
+  return routes
 }

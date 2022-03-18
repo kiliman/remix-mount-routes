@@ -1,12 +1,8 @@
 import * as fs from 'fs'
 import minimatch from 'minimatch'
 import * as path from 'path'
-import type {
-  DefineRouteFunction,
-  DefineRoutesFunction,
-  RouteManifest,
-} from './routes'
-import { createRouteId } from './routes'
+import type { DefineRouteFunction, RouteManifest } from './routes'
+import { createRouteId, defineRoutes } from './routes'
 
 const routeModuleExts = ['.js', '.jsx', '.ts', '.tsx', '.md', '.mdx']
 
@@ -26,15 +22,14 @@ export function isRouteModuleFile(filename: string): boolean {
  * with a path of `gists/:username`.
  */
 export function mountRoutes(
-  appDir: string,
   basePath: string,
-  defineRoutes: DefineRoutesFunction,
+  routesDir: string,
   ignoredFilePatterns?: string[],
 ): RouteManifest {
   let files: { [routeId: string]: string } = {}
 
   // First, find all route modules in app/routes
-  visitFiles(path.join(appDir, 'routes'), file => {
+  visitFiles(path.join('app', routesDir), file => {
     if (
       ignoredFilePatterns &&
       ignoredFilePatterns.some(pattern => minimatch(file, pattern))
@@ -43,13 +38,13 @@ export function mountRoutes(
     }
 
     if (isRouteModuleFile(file)) {
-      let routeId = createRouteId(basePath, path.join('routes', file))
-      files[routeId] = path.join('routes', file)
+      let routeId = createRouteId(basePath, path.join(routesDir, file))
+      files[routeId] = path.join(routesDir, file)
       return
     }
 
     throw new Error(
-      `Invalid route module file: ${path.join(appDir, 'routes', file)}`,
+      `Invalid route module file: ${path.join('app', routesDir, file)}`,
     )
   })
 
@@ -111,7 +106,7 @@ export function mountRoutes(
     }
   }
 
-  return defineRoutes(defineNestedRoutes)
+  return defineRoutes(basePath, defineNestedRoutes)
 }
 
 let escapeStart = '['
