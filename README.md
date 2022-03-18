@@ -21,10 +21,8 @@ Update your _remix.config.js_ file and use the custom routes config option.
 Call `mountRoutes(basePath, routesDir, ignoredRouteFiles?)` and return
 the route manifest.
 
-NOTE: `basePath` should be an absolute path (e.g., `/myapp`)
-
-Your route files are still relative to `app/routes` folder. That is
-`app/routes/posts/$slug.tsx` will map to the URL `/myapp/posts/:slug`
+NOTE: `basePath` should be an absolute path (e.g., `/myapp`) and `routesDir`
+should be relative to the `app` folder.
 
 Depending on your setup, you may also need to update `publicPath` and
 `assetsBuildDirectory` to include your `basePath`. This will ensure that your
@@ -46,9 +44,26 @@ const basePath = process.env.REMIX_BASEPATH ?? ''
 
 module.exports = {
   ignoredRouteFiles: ['.*'],
-  publicPath: `${basePath}/build/`,
-  assetsBuildDirectory: `public${basePath}/build`,
-  routes: defineRoutes => mountRoutes('app', basePath, defineRoutes),
+  // publicPath: `${basePath}/build/`,
+  // assetsBuildDirectory: `public${basePath}/build`,
+  routes: defineRoutes => {
+    // /myapp => app/routes/index.tsx
+    const baseRoutes = mountRoutes('/myapp', 'routes')
+    // /test => app/addins/test/index.tsx
+    const testRoutes = mountRoutes('/test', 'addins/test')
+
+    // use standard Remix defineRoutes API
+    // /some/path/* => app/addins/catchall.tsx
+    const customRoutes = defineRoutes(route => {
+      route('/some/path/*', 'addins/catchall.tsx')
+    })
+    const routes = {
+      ...baseRoutes,
+      ...testRoutes,
+      ...customRoutes,
+    }
+    return routes
+  },
 }
 ```
 
