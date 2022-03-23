@@ -38,7 +38,7 @@ variable like:
 
 ```js
 // remix.config.js
-const { mountRoutes } = require('remix-mountroutes')
+const { mountRoutes } = require('remix-mount-routes')
 
 const basePath = process.env.REMIX_BASEPATH ?? ''
 
